@@ -1,0 +1,19 @@
+name: Lint YAML
+
+on:
+  push:
+    paths:
+      - "k8s/**"
+  pull_request:
+    paths:
+      - "k8s/**"
+
+jobs:
+  yamllint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: yamllint
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: k8s/
