@@ -17,6 +17,20 @@
         src: /var/lib/rancher/k3s/server/node-token
       register: node_token
 
+    - name: Fetch kubeconfig to local project directory
+      fetch:
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: "{{ playbook_dir }}/../k3s.yaml"
+        flat: yes
+
+    - name: Update kubeconfig server IP
+      delegate_to: localhost
+      become: false
+      replace:
+        path: "{{ playbook_dir }}/../k3s.yaml"
+        regexp: '127.0.0.1'
+        replace: "{{ ansible_host }}"
+
 - name: Install K3s Workers
   hosts: workers
   become: true
