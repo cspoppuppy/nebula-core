@@ -14,14 +14,17 @@
         name: "{{ inventory_hostname }}"
       tags: ["config"]
 
-    - name: Disable Swap (Required for K8s)
-      command: dphys-swapfile swapoff
+    - name: Disable Swap (Runtime)
+      command: swapoff -a
+      changed_when: false
       ignore_errors: yes
       tags: ["config"]
 
-    - name: Uninstall Swap
-      command: dphys-swapfile uninstall
-      ignore_errors: yes
+    - name: Disable Swap (Persist)
+      replace:
+        path: /etc/fstab
+        regexp: '^(\s*)([^#\n]+\s+swap\s+.*)$'
+        replace: '#\1\2'
       tags: ["config"]
 
     - name: Enable cgroups for K3s (cmdline.txt)
