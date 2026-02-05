@@ -43,7 +43,11 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "k8s_tunnel_config" {
     ingress = [
       {
         hostname = "argocd.shacheng.co.uk"
-        service  = "http://argocd-server.argocd.svc.cluster.local:80"
+        service  = "https://argocd-server.argocd.svc.cluster.local:80"
+        origin_request = {
+          no_tls_verify = true # allow self-sigined internal certificate
+          no_happy_eyeballs = true # Avoid issues with IPv6
+        }
       },
       {
         hostname = "grafana.shacheng.co.uk"
