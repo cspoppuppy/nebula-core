@@ -4,7 +4,7 @@
   become: true
   tasks:
     - name: Install K3s Server
-      shell: curl -sfL https://get.k3s.io | sh -
+      shell: curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable servicelb" sh -
       args:
         creates: /usr/local/bin/k3s
 
