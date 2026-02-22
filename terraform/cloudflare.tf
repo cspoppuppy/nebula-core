@@ -95,7 +95,9 @@ resource "cloudflare_zero_trust_access_application" "ollama_app" {
   
   # Reference the policy ID here
   policies = [
-    cloudflare_zero_trust_access_policy.ollama_policy.id
+    {
+      id = cloudflare_zero_trust_access_policy.ollama_policy.id
+    }
   ]
 }
 
@@ -107,8 +109,9 @@ resource "cloudflare_zero_trust_access_policy" "ollama_policy" {
 
   include = [
     {
-      service_token = [cloudflare_zero_trust_access_service_token.ollama_remote.id]
+      service_token = {
+        token_id = cloudflare_zero_trust_access_service_token.ollama_remote.id
+      }
     }
   ]
 }
-
