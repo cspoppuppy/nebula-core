@@ -47,6 +47,10 @@ spec:
           value: "http://ollama.ollama.svc.cluster.local:11434"
         - name: WEBUI_AUTH
           value: "True"
+        - name: ENABLE_SIGNUP
+          value: "False"
+        - name: DEFAULT_USER_ROLE
+          value: "pending"
         volumeMounts:
         - name: webui-data
           mountPath: /app/backend/data
