@@ -6,3 +6,13 @@ output "tunnel_token" {
   })))
   sensitive = true
 }
+
+
+output "ollama_service_token_id" {
+  value = cloudflare_zero_trust_access_service_token.ollama_remote.client_id
+}
+
+output "ollama_service_token_secret" {
+  value     = cloudflare_zero_trust_access_service_token.ollama_remote.client_secret
+  sensitive = true
+}
