@@ -76,3 +76,39 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "k8s_tunnel_config" {
     ]
   }
 }
+
+# ----------------------------------------------------------------------------
+# Secure Ollama endpoint with Cloudflare Zero Trust Access
+# ----------------------------------------------------------------------------
+# Service token for Ollama API access
+resource "cloudflare_zero_trust_access_service_token" "ollama_remote" {
+  account_id = var.cloudflare_account_id
+  name       = "Ollama Remote Access Token"
+}
+
+# Create the application (updated with policies reference)
+resource "cloudflare_zero_trust_access_application" "ollama_app" {
+  account_id = var.cloudflare_account_id
+  name       = "Ollama API"
+  domain     = "ollama.shacheng.co.uk"
+  type       = "self_hosted"
+  
+  # Reference the policy ID here
+  policies = [
+    cloudflare_zero_trust_access_policy.ollama_policy.id
+  ]
+}
+
+# Create the policy
+resource "cloudflare_zero_trust_access_policy" "ollama_policy" {
+  account_id = var.cloudflare_account_id
+  name       = "Allow Service Token Only"
+  decision   = "non_identity"
+
+  include = [
+    {
+      service_token = [cloudflare_zero_trust_access_service_token.ollama_remote.id]
+    }
+  ]
+}
+
