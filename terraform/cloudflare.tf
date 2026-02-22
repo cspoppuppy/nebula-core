@@ -44,6 +44,15 @@ resource "cloudflare_dns_record" "ollama" {
   ttl     = 1
 }
 
+resource "cloudflare_dns_record" "chat" {
+  zone_id = var.cloudflare_zone_id
+  name    = "chat"
+  content = "${cloudflare_zero_trust_tunnel_cloudflared.k8s_tunnel.id}.cfargotunnel.com"
+  type    = "CNAME"
+  proxied = true
+  ttl     = 1
+}
+
 resource "cloudflare_zero_trust_tunnel_cloudflared_config" "k8s_tunnel_config" {
   tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.k8s_tunnel.id
   account_id = var.cloudflare_account_id
@@ -69,6 +78,10 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "k8s_tunnel_config" {
       {
         hostname = "ollama.shacheng.co.uk"
         service  = "http://ollama.ollama.svc.cluster.local:11434"
+      },
+      {
+        hostname = "chat.shacheng.co.uk"
+        service  = "http://open-webui.ollama.svc.cluster.local:80"
       },
       {
         service = "http_status:404"
