@@ -35,6 +35,15 @@ resource "cloudflare_dns_record" "jupyter-hub" {
   ttl     = 1
 }
 
+resource "cloudflare_dns_record" "ollama" {
+  zone_id = var.cloudflare_zone_id
+  name    = "ollama"
+  content = "${cloudflare_zero_trust_tunnel_cloudflared.k8s_tunnel.id}.cfargotunnel.com"
+  type    = "CNAME"
+  proxied = true
+  ttl     = 1
+}
+
 resource "cloudflare_zero_trust_tunnel_cloudflared_config" "k8s_tunnel_config" {
   tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.k8s_tunnel.id
   account_id = var.cloudflare_account_id
@@ -56,6 +65,10 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "k8s_tunnel_config" {
       {
         hostname = "jupyter-hub.shacheng.co.uk"
         service  = "http://proxy-public.jupyterhub.svc.cluster.local:80" # Ensure JupyterHub is installed and this service exists
+      },
+      {
+        hostname = "ollama.shacheng.co.uk"
+        service  = "http://ollama.ollama.svc.cluster.local:11434"
       },
       {
         service = "http_status:404"
